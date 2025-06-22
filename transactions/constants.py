@@ -1,0 +1,9 @@
+SUPPORTED_CURRENCIES = ["PLN", "EUR", "USD"]
+
+CURRENCY_CHOICES = [(c, c) for c in SUPPORTED_CURRENCIES]
+
+EXCHANGE_RATES = {
+    "PLN": 1.0,
+    "EUR": 4.3,
+    "USD": 4.0,
+}
