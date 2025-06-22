@@ -4,3 +4,5 @@ celery
 redis
 pytest
 pytest-django
+djangorestframework
+
