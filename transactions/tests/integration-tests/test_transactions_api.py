@@ -19,7 +19,7 @@ def client():
 
 @pytest.fixture
 def preload_transactions():
-    csv_path = Path(__file__).parent / "data" / "test_transactions_full.csv"
+    csv_path = Path(__file__).parent / "data" / "test_transactions_download.csv"
     import_csv_file(csv_path)
 
 
@@ -32,7 +32,9 @@ def test_list_all_transactions(client, preload_transactions):
 
 def test_filter_by_customer(client, preload_transactions):
     customer_id = "ffffffff-ffff-ffff-ffff-ffffffffffff"
-    response = client.get(f"{LIST_URL}?customer_id={customer_id}", HTTP_AUTHORIZATION=f"Token {TOKEN}")
+    response = client.get(
+        f"{LIST_URL}?customer_id={customer_id}", HTTP_AUTHORIZATION=f"Token {TOKEN}"
+    )
     assert response.status_code == 200
     assert len(response.data["results"]) == 4
     for item in response.data["results"]:
@@ -41,7 +43,9 @@ def test_filter_by_customer(client, preload_transactions):
 
 def test_filter_by_product(client, preload_transactions):
     product_id = "cccccccc-cccc-cccc-cccc-cccccccccccc"
-    response = client.get(f"{LIST_URL}?product_id={product_id}", HTTP_AUTHORIZATION=f"Token {TOKEN}")
+    response = client.get(
+        f"{LIST_URL}?product_id={product_id}", HTTP_AUTHORIZATION=f"Token {TOKEN}"
+    )
     assert response.status_code == 200
     assert len(response.data["results"]) == 4
     for item in response.data["results"]:
@@ -52,7 +56,7 @@ def test_filter_pagination_combined(client, preload_transactions):
     customer_id = "ffffffff-ffff-ffff-ffff-ffffffffffff"
     response = client.get(
         f"{LIST_URL}?customer_id={customer_id}&page=1&page_size=2",
-        HTTP_AUTHORIZATION=f"Token {TOKEN}"
+        HTTP_AUTHORIZATION=f"Token {TOKEN}",
     )
     assert response.status_code == 200
     assert len(response.data["results"]) == 2
@@ -60,7 +64,8 @@ def test_filter_pagination_combined(client, preload_transactions):
 
 def test_transaction_retrieve(client, preload_transactions):
     transaction_id = "4e655a43-40f0-4555-9532-500077d0c54e"
-    response = client.get(DETAIL_URL(transaction_id), HTTP_AUTHORIZATION=f"Token {TOKEN}")
+    response = client.get(
+        DETAIL_URL(transaction_id), HTTP_AUTHORIZATION=f"Token {TOKEN}"
+    )
     assert response.status_code == 200
     assert response.data["transaction_id"] == transaction_id
-

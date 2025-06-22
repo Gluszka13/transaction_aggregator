@@ -9,4 +9,3 @@ class CurrencyConverter:
         if rate is None:
             raise ValueError(f"No exchange rate for {currency}")
         return round(amount * Decimal(str(rate)), 2)
-
