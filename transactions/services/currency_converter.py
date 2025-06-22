@@ -1,3 +1,4 @@
+from decimal import Decimal
 from transactions.constants import EXCHANGE_RATES
 
 
@@ -7,4 +8,5 @@ class CurrencyConverter:
         rate = EXCHANGE_RATES.get(currency)
         if rate is None:
             raise ValueError(f"No exchange rate for {currency}")
-        return round(amount * rate, 2)
+        return round(amount * Decimal(str(rate)), 2)
+

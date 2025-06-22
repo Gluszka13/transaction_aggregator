@@ -1,0 +1,13 @@
+transaction_id,timestamp,amount,currency,customer_id,product_id,quantity
+3c206de9-0201-45d4-94bd-1a9ca6cf0d8d,2025-01-01T10:00:00,100,PLN,ffffffff-ffff-ffff-ffff-ffffffffffff,bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb,1
+4e655a43-40f0-4555-9532-500077d0c54e,2025-01-01T10:05:00,110,EUR,eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee,cccccccc-cccc-cccc-cccc-cccccccccccc,2
+73882b9c-c175-4f49-9307-95c299ae80d1,2025-01-01T10:10:00,120,USD,aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa,dddddddd-dddd-dddd-dddd-dddddddddddd,3
+9227e0e7-1886-4fc9-94f8-0f1c5ef7a615,2025-01-01T10:15:00,130,PLN,ffffffff-ffff-ffff-ffff-ffffffffffff,bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb,4
+15f2d360-20bc-4267-936c-3f6ed7d548ed,2025-01-01T10:20:00,140,EUR,eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee,cccccccc-cccc-cccc-cccc-cccccccccccc,5
+96841a83-51ca-48b4-a8b2-c650e133da49,2025-01-01T10:25:00,150,USD,aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa,dddddddd-dddd-dddd-dddd-dddddddddddd,6
+9594a603-f9f4-4500-a8e1-40c22f2daa47,2025-01-01T10:30:00,160,PLN,ffffffff-ffff-ffff-ffff-ffffffffffff,bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb,7
+edd98501-162e-41e4-a1a3-989515c6fc17,2025-01-01T10:35:00,170,EUR,eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee,cccccccc-cccc-cccc-cccc-cccccccccccc,8
+3b8c2b66-907e-4e27-8205-e9c6c9162914,2025-01-01T10:40:00,180,USD,aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa,dddddddd-dddd-dddd-dddd-dddddddddddd,9
+28ae9ae1-3ba5-483e-b3ff-15a1bc90af8d,2025-01-01T10:45:00,190,PLN,ffffffff-ffff-ffff-ffff-ffffffffffff,bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb,10
+b21545fa-6e67-4aa9-9e04-cc405e2bea4f,2025-01-01T10:50:00,200,EUR,eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee,cccccccc-cccc-cccc-cccc-cccccccccccc,11
+201b29ab-cfcc-4499-aac4-caa0fb49563a,2025-01-01T10:55:00,210,USD,aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa,dddddddd-dddd-dddd-dddd-dddddddddddd,12
