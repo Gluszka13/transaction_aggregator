@@ -1,113 +1,134 @@
-# Transaction Importer API
+# Transaction Aggregator
 
-A Django REST API for uploading and processing transaction data from CSV files. Includes endpoints for listing and retrieving transactions, as well as generating customer and product summary reports.
+## Overview
+
+A REST API for importing and aggregating transaction data from CSV files. It provides endpoints for listing and retrieving transactions, as well as generating summary reports per customer or product. Currency conversion is applied to compute total amounts in PLN.
+
+The system supports asynchronous CSV import using Celery, with Redis as a broker and PostgreSQL as the main datastore.
+
+---
 
 ## Features
 
-- CSV file import via background Celery task
-- Token-based authentication for all endpoints
-- Transaction listing, filtering, pagination
-- Detailed transaction view
-- Customer and product report summaries
-- Currency conversion support (EUR/USD to PLN)
-- Unit and integration test coverage
+- Import transactions from CSV (async via Celery)
+- Duplicate transaction detection (based on `transaction_id`)
+- Token-based authentication
+- Paginated and filterable transaction list
+- Customer and product summary reports with date range support
+- Conversion of USD/EUR amounts to PLN using fixed rates
+- Logging of import results and API errors
+- Indexed fields for optimized filtering by `customer_id` and `product_id`
 
-## Getting Started
+---
 
-### Prerequisites
+## Technologies
 
-- Docker
-- Docker Compose
+- Python 3.10
+- Django 4.x
+- Celery
+- PostgreSQL
+- Redis
+- Docker & Docker Compose
+- pytest
 
-### Setup
+---
+
+## Setup
+
+### `.env` example
+
+```env
+POSTGRES_DB=mydb
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+
+DJANGO_SECRET_KEY=your_secret_key
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+
+API_TOKEN=secret123
+CELERY_BROKER_URL=redis://redis:6379/0
+```
+
+---
+
+## Running the App
+
+Start all services with:
 
 ```bash
 docker-compose up --build
 ```
 
-Once the services are up, the API will be available at:
-
-```
-http://localhost:8000/api/
-```
-
-The default token is:
-
-```
-Token secret123
-```
-
-## Usage
-
-### Importing Transactions
-
-Upload a CSV file:
-
-```bash
-curl -X POST http://localhost:8000/api/transactions/upload/ \
-  -H "Authorization: Token secret123" \
-  -F "file=@transactions/tests/integration-tests/data/test_transactions_full.csv"
-```
-
-### Watching Celery logs
-
-To observe import progress:
-
-```bash
-docker-compose logs -f celery
-```
-
-You’ll see logs indicating successful imports or validation errors per row.
-
----
-
-### List Transactions
-
-```bash
-curl -H "Authorization: Token secret123" http://localhost:8000/api/transactions/
-```
-
-### Retrieve Single Transaction
-
-```bash
-curl -H "Authorization: Token secret123" http://localhost:8000/api/transactions/<transaction_id>/
-```
-
----
-
-### Customer Summary Report
-
-```bash
-curl -H "Authorization: Token secret123" \
-  http://localhost:8000/api/reports/customer-summary/<customer_id>/?date_from=2025-01-01&date_to=2025-12-31
-```
-
-### Product Summary Report
-
-```bash
-curl -H "Authorization: Token secret123" \
-  http://localhost:8000/api/reports/product-summary/<product_id>/?date_from=2025-01-01&date_to=2025-12-31
-```
+Services:
+- Django API (http://localhost:8000)
+- PostgreSQL
+- Redis
+- Celery worker
 
 ---
 
 ## Running Tests
 
-### Unit Tests
+Run unit and integration tests via:
 
 ```bash
-pytest transactions/tests/unit-tests/
+docker-compose run web pytest
 ```
 
-### Integration Tests
+### Unit tests
+- `test_currency_converter.py`
+- `test_transaction_parser.py`
+
+### Integration tests
+- `test_transactions_api.py`: listing, filtering, retrieval
+- `test_reports_api.py`: customer/product reports
+- `test_upload_api.py`: CSV import scenarios
+
+> All integration tests rely on the same `csv_import_file(...)` logic that Celery uses to import data.
+
+---
+
+## Manual CSV Upload via CURL
 
 ```bash
-pytest transactions/tests/integration-tests/
+curl -X POST http://localhost:8000/api/transactions/upload/ \
+  -H "Authorization: Token secret123" \
+  -F "file=@transactions/tests/integration-tests/data/test_transactions_reports.csv"
 ```
+
+Watch Celery logs:
+
+```bash
+docker-compose logs -f celery
+```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint                                                       | Description                       |
+|--------|----------------------------------------------------------------|-----------------------------------|
+| GET    | `/api/ping/`                                                   | Health check                      |
+| POST   | `/api/transactions/upload/`                                    | Upload CSV (auth required)        |
+| GET    | `/api/transactions/`                                           | List transactions (filters/paging)|
+| GET    | `/api/transactions/<uuid:transaction_id>/`                    | Retrieve transaction by ID        |
+| GET    | `/api/reports/customer-summary/<str:customer_id>/`           | Customer summary report           |
+| GET    | `/api/reports/product-summary/<str:product_id>/`             | Product summary report            |
+
+All endpoints require the header:
+
+```
+Authorization: Token secret123
+```
+
+---
 
 ## Notes
 
-- All invalid rows in CSV are reported individually, but don’t block processing.
-- Conversion rates are fixed:
-  - 1 EUR = 4.3 PLN
-  - 1 USD = 4.0 PLN
+- Currency conversion rates are fixed (`EUR → 4.3`, `USD → 4.0`) and configured in `constants.py`.
+- `transaction_id` is enforced as unique – duplicate rows are skipped during import.
+- Invalid rows (e.g. malformed dates, missing fields) are logged during import.
+- Indexed fields (`customer_id`, `product_id`, `timestamp`) ensure efficient query performance.
+- All logs (including errors and Celery import results) are available via Django and Celery logs.
+
